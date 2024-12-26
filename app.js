@@ -28,6 +28,7 @@ async function ext_contract_add(pid, address, chain, name) {
   });
   
   console.info(`[ext_contract_add] rsp:${rsp.status}, ${rsp.data}`);  
+  return rsp.data;
 }
 
 async function ext_contract_get(cid) {
@@ -67,6 +68,7 @@ async function ext_detector_add(cid, sid, name, config) {
   });
   
   console.info(`[ext_detector_add] rsp:${rsp.status}, ${rsp.data}`);  
+  return rsp.data;
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -92,7 +94,7 @@ app.post('/webhook', async (req, res) => {
       pid, 
       contract_addr, 
       req.body.data.contract.network, 
-      `Contract-${contract_1.substring(0, 10)}`
+      `Contract-${contract_addr.substring(0, 10)}`
     );
 
     await ext_detector_add(
@@ -111,7 +113,7 @@ app.post('/webhook', async (req, res) => {
 
     res.status(200).json({ status: 'OK' });
   } catch (error) {
-    console.error('[webhook] error:', error.message);
+    console.error('[webhook] error:', error);
     res.status(500).json({ status: 'ERROR', error: error.message });
   }
 });
