@@ -77,37 +77,43 @@ app.post('/test', async (req, res) => {
 
 app.post('/webhook', async (req, res) => {
   console.info('[webhook] req:', req.body);
-  const contract = await ext_contract_get(req.body.data.contract.id)
-  const pid = contract.projectId;
+
+  try {
+    const contract = await ext_contract_get(req.body.data.contract.id)
+    const pid = contract.projectId;
+      
+    // const sid = 234; // AML
+    const sid = 186; // TVL
+    const contract_1 = req.body.data.metadata["param.to"];
+    const tvl_token = req.body.data.metadata["param.from"]; //req.body.data.contract.address
     
-  // const sid = 234; // AML
-  const sid = 186; // TVL
-  const contract_1 = req.body.data.metadata["param.to"];
-  const tvl_token = req.body.data.metadata["param.from"]; //req.body.data.contract.address
-  
-  ext_contract_add(
-    pid, 
-    contract_1, 
-    req.body.data.contract.network, 
-    `Contract-${contract_1.substring(0, 10)}`
-  );
+    ext_contract_add(
+      pid, 
+      contract_1, 
+      req.body.data.contract.network, 
+      `Contract-${contract_1.substring(0, 10)}`
+    );
 
 
-  ext_detector_add(
-      req.body.data.contract.id,
-      sid, 
-      "TVL Monitor",
-      {
-        tokens: [
-            {
-                "threshold": "25%",
-                "token": tvl_token
-            }
-        ]
-      }
-  );
+    ext_detector_add(
+        req.body.data.contract.id,
+        sid, 
+        "TVL Monitor",
+        {
+          tokens: [
+              {
+                  "threshold": "25%",
+                  "token": tvl_token
+              }
+          ]
+        }
+    );
 
-  res.status(200).json({ status: 'OK' });
+    res.status(200).json({ status: 'OK' });
+  } catch (error) {
+    console.error('[webhook] error:', error.message);
+    res.status(500).json({ status: 'ERROR', error: error.message });
+  }
 });
 
 app.listen(port, () => {
