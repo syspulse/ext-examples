@@ -82,9 +82,9 @@ app.post('/webhook', async (req, res) => {
   
   ext_contract_add(
     pid, 
-    req.body.data.action.params.to, 
+    req.body.data.action.param.to, 
     req.body.data.contract.network, 
-    `Contract-${req.body.data.action.params.to.substring(0, 10)}`
+    `Contract-${req.body.data.action.param.to.substring(0, 10)}`
   );
 
   // const sid = 234; // AML
