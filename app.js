@@ -79,17 +79,19 @@ app.post('/webhook', async (req, res) => {
   console.info('[webhook] req:', req.body);
   const contract = await ext_contract_get(req.body.data.contract.id)
   const pid = contract.projectId;
+    
+  // const sid = 234; // AML
+  const sid = 186; // TVL
+  const contract_1 = req.body.data.metadata["param.from"];
+  const tvl_token = req.body.data.metadata["param.to"]; //req.body.data.contract.address
   
   ext_contract_add(
     pid, 
-    req.body.data.action.param.to, 
+    contract_1, 
     req.body.data.contract.network, 
-    `Contract-${req.body.data.action.param.to.substring(0, 10)}`
+    `Contract-${contract_1.substring(0, 10)}`
   );
 
-  // const sid = 234; // AML
-  const sid = 186; // TVL
-  const tvl_token = req.body.data.contract.address
 
   ext_detector_add(
       req.body.data.contract.id,
