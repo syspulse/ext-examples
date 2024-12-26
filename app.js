@@ -82,8 +82,8 @@ app.post('/webhook', async (req, res) => {
     
   // const sid = 234; // AML
   const sid = 186; // TVL
-  const contract_1 = req.body.data.metadata["param.from"];
-  const tvl_token = req.body.data.metadata["param.to"]; //req.body.data.contract.address
+  const contract_1 = req.body.data.metadata["param.to"];
+  const tvl_token = req.body.data.metadata["param.from"]; //req.body.data.contract.address
   
   ext_contract_add(
     pid, 
