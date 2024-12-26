@@ -12,6 +12,7 @@ app.use(express.json());
 // ----------------------------------------------------------------------------------
 async function ext_contract_add(pid, address, chain, name) {
   console.info(`[ext_contract_add] pid:${pid}, address:${address}, chain:${chain}, name:${name}`);
+  
   const rsp = await axios.post(`${serviceUrl}/contract`, {
     projectId: pid,
     address: address,
@@ -84,22 +85,21 @@ app.post('/webhook', async (req, res) => {
       
     // const sid = 234; // AML
     const sid = 186; // TVL
-    const contract_1 = req.body.data.metadata["param.to"];
+    const contract_addr = req.body.data.metadata["param.to"];
     const tvl_token = req.body.data.metadata["param.from"]; //req.body.data.contract.address
     
-    ext_contract_add(
+    const contract_new = await ext_contract_add(
       pid, 
-      contract_1, 
+      contract_addr, 
       req.body.data.contract.network, 
       `Contract-${contract_1.substring(0, 10)}`
     );
 
-
-    ext_detector_add(
-        req.body.data.contract.id,
-        sid, 
-        "TVL Monitor",
-        {
+    await ext_detector_add(
+      contract_new.id,
+      sid, 
+      "TVL Monitor",
+      {
           tokens: [
               {
                   "threshold": "25%",
